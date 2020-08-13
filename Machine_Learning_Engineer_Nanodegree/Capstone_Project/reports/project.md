@@ -1,27 +1,28 @@
 # Capstone Project Report 
 
-Basically, given the data that Starbuck's provided to us (see the project `proposal.pdf` for a description) our objective is to deploy a machine learning solution. Here are the key steps we go through to get to a result. 
+## Definition
 
-## Imputing missing data through MICE algorithm 
+### A. Context
 
-From the beginning, we seek to answer two key questions
+Starbucks is a worlwide brand with coffe stores in multiple countries. Aiming to incentivize customer purchases, they reach out it's customers with offers by app, email or social media. 
 
-* `How strong is the relationship between the variables?`. 
+There are two main types of offers that they promote `BOGO` (buy one get another) and `discount` offers. Usually they have a limited duration, for example, two weeks and a difficulty (the amount of money to spend). However, they also involve a reward, for example in BOGO offers your reward is the same as the amount that you bought. 
 
-* ` Are there any hidden interaction Effects?`. 
+### B. Problem Statement 
 
-But, we should first address the issue of missing data, more specifically the `gender` and `income` information. It is natural to think that this data is missing cause it could be sensible, for example, a user that likes some privacy and don't want to gives its income or gender information. 
+Starbucks will like to develop a Machine Learning solution to evaluate how likely is an offer to achieve a high Completition Rate or CR for short. For this, they have collected some data that simulates the real  behavior of their customers. Once, this Machine Learning tool is ready they would like to use it to take the decision of going or not forward with a proposed offer. 
 
-To decide wether or not this data has relevant information, we split it in two groups, _group A_, the users that don't have information of age and gender. While, _group B_ are the users that have full information. Next, we test the following hypothesis 
+### C. Metrics 
 
-$$ H_{1}: \text{Group A and B are different} \\ 
-   H_{2}: \text{Group A and B are equal }, $$
+To evaluate the model accuracy, we're considering the the Mean Absolute Percentage error or $MAPE$ for short, 
 
-to support $H_{1}$ we should statistically prove that the `mean`, `median` and `standard deviation` between the groups is different. Check out the notebook `Data_Exploration_and_Confirmatory_Data_Analysis` to see the statistical tests that we're taken based on wheter or not the data has a normal distribution. 
+$$ MAPE = \dfrac{1}{n}\sum_{n}\dfrac{y_{n}-\hat{y_{n}}}{y_{n}}, $$
 
-Once we proof that missing data has relevant information, we decided to go with the Multiple Chained Equations Algorithm , or `MICE` for simplicity, to impute the missing values. MICE works basically by applying iteratively linear regression models to learn the distribution of the missing data. 
+where $y_{n}$ is the real value and $\hat{y_{n}}$ is the predicted value. We choose these metrics cause it allow us an easy interpretation, it is more quantifiable than the `RMSE`. For example, if the model achieves a 10% MAPE, it is telling us that on average it is missing the real value by 10%
 
-## What is the customer's purchase behavior? 
+## 2. Analysis
+
+### A. What is the customer's purchase behavior? 
 
 As a base question we wanted to see if the customer purchase behavior has changed from year to year and among income categories. For this consider the following 
 
@@ -35,7 +36,7 @@ The graph below help us to visualize that Top Income customers seem to have high
 
 ![Customer_Purchase_Behavior](figs/Customer_Purchase_Behavior.png)
 
-## What is the effect of promotions? 
+### B. What is the effect of promotions? 
 
 We can evaluate a promotion by measuring its ***Completition Rate***, that is, 
 
@@ -57,7 +58,29 @@ Another key finding is that **Completition Rate is not affect by duration**, tha
 
 ![Duration_Effect](figs/Duration_Effect.png)
 
-## Engineering Features 
+## 3. Methodology 
+
+### A. Imputing missing data through MICE algorithm 
+
+From the beginning, we seek to answer two key questions
+
+* `How strong is the relationship between the variables?`. 
+
+* ` Are there any hidden interaction Effects?`. 
+
+But, we should first address the issue of missing data, more specifically the `gender` and `income` information. It is natural to think that this data is missing cause it could be sensible, for example, a user that likes some privacy and don't want to gives its income or gender information. 
+
+To decide wether or not this data has relevant information, we split it in two groups, _group A_, the users that don't have information of age and gender. While, _group B_ are the users that have full information. Next, we test the following hypothesis 
+
+$$ H_{1}: \text{Group A and B are different} \\ 
+   H_{2}: \text{Group A and B are equal }, $$
+
+to support $H_{1}$ we should statistically prove that the `mean`, `median` and `standard deviation` between the groups is different. Check out the notebook `Data_Exploration_and_Confirmatory_Data_Analysis` to see the statistical tests that we're taken based on wheter or not the data has a normal distribution. 
+
+Once we proof that missing data has relevant information, we decided to go with the Multiple Chained Equations Algorithm , or `MICE` for simplicity, to impute the missing values. MICE works basically by applying iteratively linear regression models to learn the distribution of the missing data. 
+
+
+### B. Engineering Features 
 
 To better explain the behavior of the promotions we decided to engineer to engineer the following features: 
 
@@ -77,7 +100,7 @@ $$ DFR = \dfrac{\log{\text{difficulty}}}{\log{\text{difficulty}} + 1}$$
 
 $$ RR = \sqrt{\dfrac{reward}{difficulty}} $$
 
-## Why a Bayesian approach? 
+### C. Why a Bayesian approach? 
 
 Remember that our objective is to **predict the Completition Rate** or `CR` (that is $y=CR$) for every offer. However, by framing the problem in this way, we encounter with the fact that we do only have 8 samples (we're not taking into account non-informational offers). This is one of the reasons we will consider a linear regression model. 
 
@@ -87,9 +110,11 @@ $$ f(\theta) = \dfrac{1}{\theta},$$
 
 where $\theta$ is the vector of parameters that we would like to estimate. 
 
-## Boostraping Data 
+## Results
 
-Is now time to introduce our evaluation metric, the Mean Absolute Percentage error or $MAPE$ for short, 
+### A. Boostraping Data 
+
+We reintroduce the evaluation metric, the Mean Absolute Percentage error or $MAPE$ for short, 
 
 $$ MAPE = \dfrac{1}{n}\sum_{n}\dfrac{y_{n}-\hat{y_{n}}}{y_{n}}, $$
 
@@ -103,12 +128,13 @@ If you want to further see how we applied this, see the function `reg_bootstrap`
 clf = BayesianRidge(compute_score=True, normalize=True)
 ```
 
+### B. Model Evaluation
 
 Next, take a look at the behavior of the $MAPE$ at every iteration. Notice that most of the time it is between five and twenty, in fact, the average value is 12%. In other words, nearly 88% close to the real value on average.
 
 ![Mape_behavior](figs/MAPE_score.png)
 
-## Which offer should we recommend? 
+### C. Which offer should we recommend? 
 
 As we do not want to split an eight observation data on train-test. We assume a fake scenario. Suppose that a Starbuck's Project Manager comes to us with three different offers (that target three different customer segments) that they would like to assess their completition rate `CR`. 
 
@@ -129,4 +155,21 @@ Offer 3  predicted CR: 75.67366728846704
 ```
 
 As a first sight, we could go with offer three cause it has the highest predicted `CR`. However,  we should take into consideration some limitations that are inherent to offers, for example, it may be that offer 3 is cheaper and faster to deply as offer two, or that it is not valid for all the Starbucks stores. Imagine that only High Income people go to a certain Starbucks because it is in an exclusive residential zone. Thus, we should take into consideration these limitations, before giving a final recommendation. 
+
+
+##  Conclusion
+
+### A. Reflection (Framework Limitation) 
+
+The way we address the problem (predicting the completition rate) let us to a problem of few data. Fortunately, there are statistical techniques that we can apply to address this issue like a Bayesian Framework or bootstraping data.
+
+By considering this approach we will expect in the future to receive more data, remember that the data consider only one month, so having at least one quarter data or one year data should be considered enough. 
+
+Additionally, this limitation let us to consider only simple models, particularly a Bayesian Linear Regression Model. In this sense, one could not try out more robust models like Random Forest Regressor or a Neural Network. 
+
+### B. Improvement 
+
+As we mentioned before, to consider a most robust model, we would need to gather more data. However, it remained to compare the linear model to a simple heuristic or a business rule. For example, based on the results of the Exploratory Data Analysis we could just split our customers based on their income and frequency to test different offers. 
+
+To deal with the lack of data, we could have considered generating synthetic data, for example, with a bayesian neural network. In theory, the bayesian framework should be robust enough to do inference with few samples, remember what we said about the prior. Thus, it would be an interesting approach to generate at least 1000 samples with a bayesian network. 
 
