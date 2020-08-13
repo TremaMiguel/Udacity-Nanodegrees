@@ -14,25 +14,40 @@ Starbucks has collected some data that simulates the real  behavior of their cus
 Characteristics of their customers, offer's description and historic transactions from the 30 days test period are provided. Next, we give a brief description of the data. 
 
 > Profile Data. Customer description
->  * `age`: Customer age
->  * `gender`: Customer gender
->  * `id`: Unique customer identifier 
->  * `became_member_on`: Date as Year/Month/Day when the >  customer became a Starbucks member. 
->  * `income`: Customer income. 
+
+  * `age`: Customer age
+
+  * `gender`: Customer gender
+
+  * `id`: Unique customer identifier 
+
+  * `became_member_on`: Date as Year/Month/Day when the   customer became a Starbucks member. 
+
+  * `income`: Customer income. 
 
 > Portfolio Data. Offer description 
-> * `reward`: Awarded money for the amount spent 
-> * `channels`: Offer's distributed channels. 
-> * `difficulty`: Money to be spent to receive a reward. 
-> * `duration`: Offer's time validity. 
-> * `offer_type`: Type of offer
-> * `id`: Unique offer identifier. 
+
+ * `reward`: Awarded money for the amount spent 
+
+ * `channels`: Offer's distributed channels. 
+
+ * `difficulty`: Money to be spent to receive a reward. 
+
+ * `duration`: Offer's time validity. 
+
+ * `offer_type`: Type of offer
+
+ * `id`: Unique offer identifier. 
 
 > Transcript Data. The transactional data 
-> * `person`. Unique customer identifier. 
-> * `event`. Event registered. Offer Received, Offer Viewed, Offer Completed or Transaction. 
-> * `value`. Offer id or transaction amount 
-> * `time`. Hours since test started. 
+
+ * `person`. Unique customer identifier. 
+
+ * `event`. Event registered. Offer Received, Offer Viewed, Offer Completed or Transaction.
+
+ * `value`. Offer id or transaction amount 
+
+ * `time`. Hours since test started. 
 
 ## How to solve the problem? 
 
