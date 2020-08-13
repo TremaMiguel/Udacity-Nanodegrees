@@ -45,10 +45,10 @@ Most of the code is commented. For example, if instantiating an estimator, one w
 
 ```
 # Initialize Bayesian Model
-        clf = BayesianRidge(
-                compute_score=True, 
-                normalize=True
-              )
+clf = BayesianRidge(
+        compute_score=True, 
+        normalize=True
+        )
 ``` 
 
         
