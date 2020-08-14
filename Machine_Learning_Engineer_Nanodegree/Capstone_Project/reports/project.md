@@ -58,7 +58,7 @@ Another key finding is that **Completition Rate is not affect by duration**, tha
 
 ![Duration_Effect](figs/Duration_Effect.png)
 
-## 3. Methodology 
+## 3. Algorithms and Implementation (Methodology)
 
 ### A. Imputing missing data through MICE algorithm 
 
